@@ -53,7 +53,7 @@ test.describe('Force Onetime Secrets', () => {
     const lastRequest = mockAPI.getLastRequest('/secret');
     expect(lastRequest?.payload).toMatchObject({
       one_time: true,
-      expiration: 3600,
+      expiration: 604800,
       message: expect.any(String),
     });
   });

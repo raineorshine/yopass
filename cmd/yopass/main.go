@@ -51,7 +51,7 @@ func init() {
 	viper.SetDefault("api-token", "")
 	viper.SetDefault("url", defaultURL)
 	viper.SetDefault("one-time", true)
-	viper.SetDefault("expiration", "1h")
+	viper.SetDefault("expiration", "1w")
 
 	// Config file
 	viper.SetConfigName("defaults")

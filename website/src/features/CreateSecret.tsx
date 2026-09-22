@@ -33,7 +33,7 @@ export default function CreateSecret() {
     formState: { errors, isSubmitting },
   } = useForm<Secret>({
     defaultValues: {
-      expiration: String(config.DEFAULT_EXPIRY ?? 3600),
+      expiration: String(config.DEFAULT_EXPIRY ?? 604800),
     },
   });
 

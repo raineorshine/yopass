@@ -25,8 +25,8 @@ test.describe('File Upload', () => {
       page.locator('text=Drag & drop or click to choose a file'),
     ).toBeVisible();
 
-    // Check default expiration is selected (One Hour)
-    await expect(page.locator('input[value="3600"]')).toBeChecked();
+    // Check default expiration is selected (One Week)
+    await expect(page.locator('input[value="604800"]')).toBeChecked();
 
     // Check default checkboxes state
     await expect(
@@ -84,7 +84,7 @@ test.describe('File Upload', () => {
     const lastRequest = mockAPI.getLastRequest('/create/file');
     expect(lastRequest).toBeDefined();
     expect(lastRequest?.payload).toMatchObject({
-      expiration: 3600,
+      expiration: 604800,
       oneTime: true,
       contentType: 'application/octet-stream',
     });
@@ -271,16 +271,16 @@ test.describe('File Upload', () => {
       mimeType: testFiles.textFile.type,
       buffer: Buffer.from(fileContent),
     });
-    await page.check('input[value="604800"]');
+    await page.check('input[value="3600"]');
     await page.click('button[type="submit"]');
 
     await expect(
       page.locator('h2:has-text("Secret stored securely")'),
     ).toBeVisible();
 
-    // Validate One Week expiration
-    const weekRequest = mockAPI.getLastRequest('/create/file');
-    expect(weekRequest?.payload.expiration).toBe(604800);
+    // Validate One Hour expiration
+    const hourRequest = mockAPI.getLastRequest('/create/file');
+    expect(hourRequest?.payload.expiration).toBe(3600);
   });
 
   test('should toggle one-time download setting', async ({
@@ -377,8 +377,8 @@ test.describe('File Upload', () => {
       buffer: Buffer.from(fileContent),
     });
 
-    // Set One Week expiration
-    await page.check('input[value="604800"]');
+    // Set One Hour expiration
+    await page.check('input[value="3600"]');
 
     // Disable one-time download by targeting the specific checkbox in the form
     await page
@@ -398,7 +398,7 @@ test.describe('File Upload', () => {
     const lastRequest = mockAPI.getLastRequest('/create/file');
     expect(lastRequest).toBeDefined();
     expect(lastRequest?.payload).toMatchObject({
-      expiration: 604800,
+      expiration: 3600,
       contentType: 'application/octet-stream',
     });
 
@@ -439,7 +439,7 @@ test.describe('File Upload', () => {
     expect(lastRequest).toBeDefined();
     expect(lastRequest?.payload).toMatchObject({
       oneTime: true,
-      expiration: 3600,
+      expiration: 604800,
       contentType: 'application/octet-stream',
     });
   });
