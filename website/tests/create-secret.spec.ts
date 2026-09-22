@@ -27,8 +27,8 @@ test.describe('Create Secret', () => {
       page.locator('textarea[placeholder="Enter your secret..."]'),
     ).toBeVisible();
 
-    // Check default expiration is selected (One Hour)
-    await expect(page.locator('input[value="3600"]')).toBeChecked();
+    // Check default expiration is selected (One Week)
+    await expect(page.locator('input[value="604800"]')).toBeChecked();
 
     // Check default checkboxes state
     await expect(
@@ -64,7 +64,7 @@ test.describe('Create Secret', () => {
     expect(lastRequest).toBeDefined();
     expect(lastRequest?.payload).toMatchObject({
       one_time: true, // Default should be one-time
-      expiration: 3600, // Default should be 1 hour
+      expiration: 604800, // Default should be 1 week
       message: expect.any(String), // Should contain encrypted message
     });
 
@@ -105,23 +105,23 @@ test.describe('Create Secret', () => {
     const dayRequest = mockAPI.getLastRequest('/secret');
     expect(dayRequest?.payload.expiration).toBe(86400);
 
-    // Go back and test One Week expiration (604800 seconds)
+    // Go back and test One Hour expiration (3600 seconds)
     await page.goto('/');
     await page.waitForLoadState('networkidle');
     await page.fill(
       'textarea[placeholder="Enter your secret..."]',
       testSecrets.simple.message,
     );
-    await page.check('input[value="604800"]');
+    await page.check('input[value="3600"]');
     await page.click('button[type="submit"]');
 
     await expect(
       page.locator('h2:has-text("Secret stored securely")'),
     ).toBeVisible();
 
-    // Validate One Week expiration payload
-    const weekRequest = mockAPI.getLastRequest('/secret');
-    expect(weekRequest?.payload.expiration).toBe(604800);
+    // Validate One Hour expiration payload
+    const hourRequest = mockAPI.getLastRequest('/secret');
+    expect(hourRequest?.payload.expiration).toBe(3600);
   });
 
   test('should toggle one-time download setting', async ({
@@ -252,8 +252,8 @@ test.describe('Create Secret', () => {
       testSecrets.simple.message,
     );
 
-    // Set One Week expiration
-    await page.check('input[value="604800"]');
+    // Set One Hour expiration
+    await page.check('input[value="3600"]');
 
     // Disable one-time download
     await page.uncheck(
@@ -277,7 +277,7 @@ test.describe('Create Secret', () => {
       message: unknown;
       one_time?: boolean;
     } = {
-      expiration: 604800, // Should be one week
+      expiration: 3600, // Should be one hour
       message: expect.any(String), // Should contain encrypted message
     };
 

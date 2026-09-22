@@ -224,7 +224,7 @@ export class MockAPI {
       PREFETCH_SECRET: true,
       NO_LANGUAGE_SWITCHER: false,
       FORCE_ONETIME_SECRETS: false,
-      DEFAULT_EXPIRY: 3600,
+      DEFAULT_EXPIRY: 604800,
       MAX_FILE_SIZE: '1MB',
       MAX_REQUEST_FILE_SIZE: '512KB',
       THEME_LIGHT: 'emerald',

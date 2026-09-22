@@ -31,7 +31,7 @@ Settings are read in this order (later sources override earlier ones):
 | `--api` | `https://api.yopass.se` | Yopass API server location |
 | `--url` | `https://yopass.se` | Yopass public URL |
 | `--decrypt` | | Decrypt a secret URL |
-| `--expiration` | `1h` | Duration before secret is deleted (`1h`, `1d`, `1w`) |
+| `--expiration` | `1w` | Duration before secret is deleted (`1h`, `1d`, `1w`) |
 | `--file` | | Read secret from file instead of stdin |
 | `--key` | | Manual encryption/decryption key |
 | `--one-time` | `true` | Delete secret after first download |
