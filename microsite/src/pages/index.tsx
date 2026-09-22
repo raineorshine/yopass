@@ -51,7 +51,7 @@ export default function Home(): React.ReactElement {
           ],
           featureList: ['End-to-end encryption', 'Self-destructing links', 'One-time downloads', 'No account required', 'Open source', 'Docker and Kubernetes support'],
           isAccessibleForFree: true,
-          license: 'https://github.com/jhaals/yopass/blob/master/LICENSE',
+          license: 'https://github.com/jhaals/yopass/blob/main/LICENSE',
         })}</script>
       </Head>
 

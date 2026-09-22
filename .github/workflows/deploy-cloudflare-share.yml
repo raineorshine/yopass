@@ -4,7 +4,7 @@ name: Deploy sharing app to Cloudflare Pages
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - "website/**"
   schedule:
@@ -24,7 +24,7 @@ concurrency:
 jobs:
   check:
     name: Check sharing app changes
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     outputs:
       deploy: ${{ steps.deploy-check.outputs.deploy }}
@@ -125,7 +125,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=yopass-share --branch=master --commit-hash=${{ github.sha }}
+          command: pages deploy dist --project-name=yopass-share --branch=main --commit-hash=${{ github.sha }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           packageManager: npm
           workingDirectory: website
