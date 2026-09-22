@@ -17,25 +17,13 @@ export default function CreateSecret() {
   const [readReceipt, setReadReceipt] = useState(false);
   const [receiptToken, setReceiptToken] = useState<string | undefined>();
 
-  const {
-    oneTime,
-    setOneTime,
-    generateKey,
-    setGenerateKey,
-    customPassword,
-    setCustomPassword,
-    result,
-    setResult,
-    getPassword,
-    isCustomPassword,
-  } = useSecretForm();
+  const { oneTime, setOneTime, result, setResult, getPassword } =
+    useSecretForm();
 
   type Secret = {
     secret: string;
     expiration: string;
     oneTime: boolean;
-    generateKey: boolean;
-    customPassword: string;
   };
   const {
     register,
@@ -45,7 +33,7 @@ export default function CreateSecret() {
     formState: { errors, isSubmitting },
   } = useForm<Secret>({
     defaultValues: {
-      expiration: String(config.DEFAULT_EXPIRY ?? 3600),
+      expiration: String(config.DEFAULT_EXPIRY ?? 604800),
     },
   });
 
@@ -83,7 +71,6 @@ export default function CreateSecret() {
         setResult({
           password: pw,
           uuid: data.message,
-          customPassword: isCustomPassword(),
         });
       }
     } catch (error) {
@@ -100,7 +87,6 @@ export default function CreateSecret() {
         password={result.password}
         uuid={result.uuid}
         prefix="s"
-        customPassword={result.customPassword}
         oneTime={config.FORCE_ONETIME_SECRETS || oneTime}
         receiptToken={receiptToken}
       />
@@ -137,10 +123,6 @@ export default function CreateSecret() {
           setValue={setValue}
           oneTime={oneTime}
           setOneTime={setOneTime}
-          generateKey={generateKey}
-          setGenerateKey={setGenerateKey}
-          customPassword={customPassword}
-          setCustomPassword={setCustomPassword}
           requireAuth={requireAuth}
           setRequireAuth={setRequireAuth}
           readReceipt={readReceipt}

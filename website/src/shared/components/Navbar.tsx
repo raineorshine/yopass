@@ -47,20 +47,24 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 bg-base-100/80 backdrop-blur-lg border-b border-base-300">
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
+          {/* Brand: only rendered for a configured logo or app name; there
+              is no built-in default. */}
           <div className="flex items-center min-w-0">
-            <a
-              className="flex items-center text-lg font-bold tracking-tight text-base-content hover:text-primary transition-colors duration-200 px-2 py-1 rounded-md hover:bg-base-200 min-w-0"
-              href="/"
-            >
-              <img
-                src={LOGO_URL ?? '/yopass.svg'}
-                alt={APP_NAME ?? 'Yopass'}
-                className="h-8 w-8 mr-2 sm:mr-3 shrink-0"
-              />
-              <span className="truncate">
-                {APP_NAME ?? t('header.appName')}
-              </span>
-            </a>
+            {(LOGO_URL || APP_NAME) && (
+              <a
+                className="flex items-center text-lg font-bold tracking-tight text-base-content hover:text-primary transition-colors duration-200 px-2 py-1 rounded-md hover:bg-base-200 min-w-0"
+                href="/"
+              >
+                {LOGO_URL && (
+                  <img
+                    src={LOGO_URL}
+                    alt={APP_NAME ?? t('header.buttonHome')}
+                    className={`h-8 w-8 shrink-0 ${APP_NAME ? 'mr-2 sm:mr-3' : ''}`}
+                  />
+                )}
+                {APP_NAME && <span className="truncate">{APP_NAME}</span>}
+              </a>
+            )}
           </div>
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {!READ_ONLY &&

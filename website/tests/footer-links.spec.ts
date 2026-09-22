@@ -62,9 +62,9 @@ test.describe('Footer Links', () => {
     // Check that imprint link is not present
     await expect(page.locator('a:has-text("Imprint")')).not.toBeVisible();
 
-    // Check that the text contains bullet separator and created by text
+    // Sole link, so no bullet separator
     const footerText = page.locator('footer div.flex.flex-wrap');
-    await expect(footerText).toContainText('Privacy Notice•© 2014');
+    await expect(footerText).toHaveText('Privacy Notice');
   });
 
   test('should show only imprint link when configured', async ({ page }) => {
@@ -100,9 +100,9 @@ test.describe('Footer Links', () => {
       page.locator('a:has-text("Privacy Notice")'),
     ).not.toBeVisible();
 
-    // Check that the text contains bullet separator and created by text
+    // Sole link, so no bullet separator
     const footerText = page.locator('footer div.flex.flex-wrap');
-    await expect(footerText).toContainText('Imprint•© 2014');
+    await expect(footerText).toHaveText('Imprint');
   });
 
   test('should show both privacy notice and imprint links when both are configured', async ({
@@ -144,9 +144,9 @@ test.describe('Footer Links', () => {
     );
     await expect(imprintLink).toHaveAttribute('target', '_blank');
 
-    // Check that both links are on the same line with bullet separators
+    // Check that both links are on the same line with a bullet separator
     const footerText = page.locator('footer div.flex.flex-wrap');
-    await expect(footerText).toContainText('Privacy Notice•Imprint•© 2014');
+    await expect(footerText).toHaveText('Privacy Notice•Imprint');
   });
 
   test('should show footer links on all pages when configured', async ({
@@ -208,9 +208,7 @@ test.describe('Footer Links', () => {
     await expect(page.locator('a:has-text("Imprint")')).not.toBeVisible();
   });
 
-  test('should show default Yopass copyright when APP_NAME is not set', async ({
-    page,
-  }) => {
+  test('should carry no branding or copyright line', async ({ page }) => {
     await page.route('**/config', async route => {
       await route.fulfill({
         status: 200,
@@ -227,13 +225,12 @@ test.describe('Footer Links', () => {
     await page.waitForLoadState('networkidle');
 
     const footer = page.locator('footer');
-    const currentYear = await page.evaluate(() =>
-      new Date().getFullYear().toString(),
-    );
-    await expect(footer).toContainText(`© 2014–${currentYear}`);
-    await expect(footer.locator('a[href="https://yopass.se"]')).toBeVisible();
-    await expect(footer.locator('a[href="https://yopass.se"]')).toHaveText(
-      'Yopass',
-    );
+    await expect(footer).toBeVisible();
+    await expect(footer).toHaveText('');
+    await expect(footer.locator('a')).toHaveCount(0);
+
+    // The header carries no default brand either
+    await expect(page.locator('header img')).toHaveCount(0);
+    await expect(page.locator('header')).not.toContainText('Yopass');
   });
 });

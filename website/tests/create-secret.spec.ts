@@ -27,8 +27,8 @@ test.describe('Create Secret', () => {
       page.locator('textarea[placeholder="Enter your secret..."]'),
     ).toBeVisible();
 
-    // Check default expiration is selected (One Hour)
-    await expect(page.locator('input[value="3600"]')).toBeChecked();
+    // Check default expiration is selected (One Week)
+    await expect(page.locator('input[value="604800"]')).toBeChecked();
 
     // Check default checkboxes state
     await expect(
@@ -36,17 +36,6 @@ test.describe('Create Secret', () => {
         'label:has-text("One-time download") input[type="checkbox"]',
       ),
     ).toBeChecked();
-    await expect(
-      page.locator(
-        'label:has-text("Generate decryption key") input[type="checkbox"]',
-      ),
-    ).toBeChecked();
-
-    // Check custom password field is not visible by default
-    await expect(
-      page.locator('input[placeholder="Enter your password..."]'),
-    ).not.toBeVisible();
-
     // Check submit button
     await expect(page.locator('button[type="submit"]')).toContainText(
       'Encrypt Message',
@@ -75,7 +64,7 @@ test.describe('Create Secret', () => {
     expect(lastRequest).toBeDefined();
     expect(lastRequest?.payload).toMatchObject({
       one_time: true, // Default should be one-time
-      expiration: 3600, // Default should be 1 hour
+      expiration: 604800, // Default should be 1 week
       message: expect.any(String), // Should contain encrypted message
     });
 
@@ -93,71 +82,6 @@ test.describe('Create Secret', () => {
     await expect(
       page.locator('button[title="Copy one-click link"]'),
     ).toBeVisible();
-  });
-
-  test('should create a secret with custom password', async ({ page }) => {
-    await mockAPI.mockCreateSecret(mockResponses.secretCreated);
-
-    const customPassword = 'my-custom-password-123';
-
-    // Fill in the secret
-    await page.fill(
-      'textarea[placeholder="Enter your secret..."]',
-      testSecrets.simple.message,
-    );
-
-    // Uncheck generate key to enable custom password
-    await page.uncheck(
-      'label:has-text("Generate decryption key") input[type="checkbox"]',
-    );
-
-    // Check that custom password field is now visible
-    await expect(
-      page.locator('input[placeholder="Enter your password..."]'),
-    ).toBeVisible();
-
-    // Enter custom password
-    await page.fill(
-      'input[placeholder="Enter your password..."]',
-      customPassword,
-    );
-
-    // Submit the form
-    await page.click('button[type="submit"]');
-
-    // Should redirect to result page
-    await expect(
-      page.locator('h2:has-text("Secret stored securely")'),
-    ).toBeVisible();
-
-    // With custom password, should NOT show one-click link
-    await expect(
-      page.locator('button[title="Copy one-click link"]'),
-    ).not.toBeVisible();
-    await expect(page.locator('text=One-click link')).not.toBeVisible();
-
-    // Should show short link
-    await expect(page.locator('button[title="Copy short link"]')).toBeVisible();
-    await expect(
-      page.locator('div:has-text("Short link")').first(),
-    ).toBeVisible();
-
-    // Should show the custom password in the decryption key section
-    await expect(
-      page.locator('div:has-text("Decryption key")').first(),
-    ).toBeVisible();
-    const passwordCode = page
-      .locator('div:has-text("Decryption key")')
-      .locator('..')
-      .locator('code')
-      .last();
-    await expect(passwordCode).toContainText(customPassword);
-
-    // Validate that the custom password was used in encryption
-    const lastRequest = mockAPI.getLastRequest('/secret');
-    expect(lastRequest).toBeDefined();
-    // The message should be encrypted with the custom password
-    expect(lastRequest?.payload.message).not.toBe(testSecrets.simple.message);
   });
 
   test('should create a secret with different expiration times', async ({
@@ -181,23 +105,23 @@ test.describe('Create Secret', () => {
     const dayRequest = mockAPI.getLastRequest('/secret');
     expect(dayRequest?.payload.expiration).toBe(86400);
 
-    // Go back and test One Week expiration (604800 seconds)
+    // Go back and test One Hour expiration (3600 seconds)
     await page.goto('/');
     await page.waitForLoadState('networkidle');
     await page.fill(
       'textarea[placeholder="Enter your secret..."]',
       testSecrets.simple.message,
     );
-    await page.check('input[value="604800"]');
+    await page.check('input[value="3600"]');
     await page.click('button[type="submit"]');
 
     await expect(
       page.locator('h2:has-text("Secret stored securely")'),
     ).toBeVisible();
 
-    // Validate One Week expiration payload
-    const weekRequest = mockAPI.getLastRequest('/secret');
-    expect(weekRequest?.payload.expiration).toBe(604800);
+    // Validate One Hour expiration payload
+    const hourRequest = mockAPI.getLastRequest('/secret');
+    expect(hourRequest?.payload.expiration).toBe(3600);
   });
 
   test('should toggle one-time download setting', async ({
@@ -287,13 +211,9 @@ test.describe('Create Secret', () => {
     );
     await page.click('button[type="submit"]');
 
-    // Should have copy buttons for different link types
+    // Should have a copy button for the one-click link
     await expect(
       page.locator('button[title="Copy one-click link"]'),
-    ).toBeVisible();
-    await expect(page.locator('button[title="Copy short link"]')).toBeVisible();
-    await expect(
-      page.locator('button[title="Copy decryption key"]'),
     ).toBeVisible();
   });
 
@@ -326,29 +246,18 @@ test.describe('Create Secret', () => {
   }) => {
     await mockAPI.mockCreateSecret(mockResponses.secretCreated);
 
-    const customPassword = 'test-password-456';
-
     // Set up non-default values
     await page.fill(
       'textarea[placeholder="Enter your secret..."]',
       testSecrets.simple.message,
     );
 
-    // Set One Week expiration
-    await page.check('input[value="604800"]');
+    // Set One Hour expiration
+    await page.check('input[value="3600"]');
 
     // Disable one-time download
     await page.uncheck(
       'label:has-text("One-time download") input[type="checkbox"]',
-    );
-
-    // Use custom password
-    await page.uncheck(
-      'label:has-text("Generate decryption key") input[type="checkbox"]',
-    );
-    await page.fill(
-      'input[placeholder="Enter your password..."]',
-      customPassword,
     );
 
     // Submit the form
@@ -368,7 +277,7 @@ test.describe('Create Secret', () => {
       message: unknown;
       one_time?: boolean;
     } = {
-      expiration: 604800, // Should be one week
+      expiration: 3600, // Should be one hour
       message: expect.any(String), // Should contain encrypted message
     };
 
@@ -383,19 +292,10 @@ test.describe('Create Secret', () => {
     expect(lastRequest?.payload.message).not.toBe(testSecrets.simple.message);
     expect(lastRequest?.payload.message.length).toBeGreaterThan(0);
 
-    // Should show only short link with custom password
+    // Should show the one-click link
     await expect(
       page.locator('button[title="Copy one-click link"]'),
-    ).not.toBeVisible();
-    await expect(page.locator('button[title="Copy short link"]')).toBeVisible();
-
-    // Should display the custom password
-    const passwordCode = page
-      .locator('div:has-text("Decryption key")')
-      .locator('..')
-      .locator('code')
-      .last();
-    await expect(passwordCode).toContainText(customPassword);
+    ).toBeVisible();
   });
 
   test('should show "Copied" feedback when copy button is clicked', async ({

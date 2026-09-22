@@ -14,8 +14,6 @@ import Result from '@features/display-secret/Result';
 type FormValues = {
   expiration: string;
   oneTime: boolean;
-  generateKey: boolean;
-  customPassword: string;
 };
 
 export default function StreamingUpload() {
@@ -30,25 +28,13 @@ export default function StreamingUpload() {
   const [readReceipt, setReadReceipt] = useState(false);
   const [receiptToken, setReceiptToken] = useState<string | undefined>();
 
-  const {
-    oneTime,
-    setOneTime,
-    generateKey,
-    setGenerateKey,
-    customPassword,
-    setCustomPassword,
-    result,
-    setResult,
-    getPassword,
-    isCustomPassword,
-  } = useSecretForm();
+  const { oneTime, setOneTime, result, setResult, getPassword } =
+    useSecretForm();
 
   const { register, handleSubmit, setValue } = useForm<FormValues>({
     defaultValues: {
-      expiration: String(config?.DEFAULT_EXPIRY ?? 3600),
+      expiration: String(config?.DEFAULT_EXPIRY ?? 604800),
       oneTime: true,
-      generateKey: true,
-      customPassword: '',
     },
   });
 
@@ -172,7 +158,6 @@ export default function StreamingUpload() {
       setResult({
         password: pw,
         uuid: res.message,
-        customPassword: isCustomPassword(),
       });
     } catch (err) {
       setError((err as Error).message);
@@ -186,7 +171,6 @@ export default function StreamingUpload() {
         password={result.password}
         uuid={result.uuid}
         prefix="f"
-        customPassword={result.customPassword}
         oneTime={config?.FORCE_ONETIME_SECRETS || oneTime}
         receiptToken={receiptToken}
       />
@@ -275,10 +259,6 @@ export default function StreamingUpload() {
           setValue={setValue}
           oneTime={oneTime}
           setOneTime={setOneTime}
-          generateKey={generateKey}
-          setGenerateKey={setGenerateKey}
-          customPassword={customPassword}
-          setCustomPassword={setCustomPassword}
           requireAuth={requireAuth}
           setRequireAuth={setRequireAuth}
           readReceipt={readReceipt}

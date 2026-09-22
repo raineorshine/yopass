@@ -20,7 +20,7 @@ export default function CreateRequest() {
   const config = useConfig();
   const [label, setLabel] = useState('');
   const [expiration, setExpiration] = useState(
-    String(config?.DEFAULT_EXPIRY ?? 3600),
+    String(config?.DEFAULT_EXPIRY ?? 604800),
   );
   const forceExpiration = config?.FORCE_EXPIRATION;
   const expirationOptions = [

@@ -13,7 +13,6 @@ interface ResultProps {
   password: string;
   uuid: string;
   prefix: string;
-  customPassword: boolean;
   oneTime: boolean;
   receiptToken?: string;
 }
@@ -51,7 +50,6 @@ function Result({
   password,
   uuid,
   prefix,
-  customPassword,
   oneTime,
   receiptToken,
 }: ResultProps) {
@@ -61,7 +59,6 @@ function Result({
     ? config.PUBLIC_URL.replace(/\/$/, '')
     : window.location.origin;
   const oneClickLink = `${baseURL}/#/${prefix}/${uuid}/${password}`;
-  const shortLink = `${baseURL}/#/${prefix}/${uuid}`;
   const { copy, isCopied } = useCopy();
 
   return (
@@ -94,7 +91,7 @@ function Result({
           </div>
         </div>
       )}
-      {oneClickLink && !customPassword && (
+      {oneClickLink && (
         <div
           className="mb-4 p-5 bg-base-200/50 border border-base-300 rounded-lg animate-result-enter"
           style={{ animationDelay: '150ms' }}
@@ -121,56 +118,6 @@ function Result({
           </div>
         </div>
       )}
-      <div
-        className="mb-4 p-5 bg-base-200/50 border border-base-300 rounded-lg animate-result-enter"
-        style={{ animationDelay: '220ms' }}
-      >
-        <div className="font-semibold text-base mb-1 text-base-content">
-          {t('result.rowLabelShortLink')}
-        </div>
-        <div className="text-sm text-base-content/70 mb-4">
-          {t('result.rowShortLinkDescription')}
-        </div>
-        <div className="flex items-start gap-3">
-          <CopyButton
-            copied={isCopied('shortLink')}
-            onClick={() => copy(shortLink, 'shortLink')}
-            title="Copy short link"
-            copyLabel={t('common.copy')}
-            copiedLabel={t('common.copied')}
-          />
-          <div className="flex-1 bg-base-100 border border-base-300 rounded-md px-4 py-3 min-h-[2.5rem] min-w-0">
-            <code className="text-sm text-base-content/80 font-mono break-words leading-relaxed">
-              {shortLink}
-            </code>
-          </div>
-        </div>
-      </div>
-      <div
-        className="mb-4 p-5 bg-base-200/50 border border-base-300 rounded-lg animate-result-enter"
-        style={{ animationDelay: '290ms' }}
-      >
-        <div className="font-semibold text-base mb-1 text-base-content">
-          {t('result.rowLabelDecryptionKey')}
-        </div>
-        <div className="text-sm text-base-content/70 mb-4">
-          {t('result.rowDecryptionKeyDescription')}
-        </div>
-        <div className="flex items-start gap-3">
-          <CopyButton
-            copied={isCopied('password')}
-            onClick={() => copy(password, 'password')}
-            title="Copy decryption key"
-            copyLabel={t('common.copy')}
-            copiedLabel={t('common.copied')}
-          />
-          <div className="flex-1 bg-base-100 border border-base-300 rounded-md px-4 py-3 min-h-[2.5rem] min-w-0">
-            <code className="text-sm text-base-content/80 font-mono break-words leading-relaxed">
-              {password}
-            </code>
-          </div>
-        </div>
-      </div>
       {receiptToken && <ReceiptStatus uuid={uuid} token={receiptToken} />}
       <div className="flex justify-center mt-8">
         <button

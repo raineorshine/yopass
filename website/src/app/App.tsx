@@ -43,6 +43,11 @@ export default function App() {
 
   // Whether creation pages must show the login gate instead of their content.
   const needsLogin = REQUIRE_AUTH && !authLoading && !isAuthenticated;
+
+  // Footer carries only the operator's own links; there is no built-in
+  // branding or copyright line.
+  const hasPrivacyNotice = Boolean(PRIVACY_NOTICE_URL?.trim());
+  const hasImprint = Boolean(IMPRINT_URL?.trim());
   return (
     <div className="min-h-screen bg-base-200 flex flex-col overflow-x-hidden">
       <button
@@ -145,43 +150,29 @@ export default function App() {
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="flex flex-wrap items-center justify-center gap-2 text-sm">
-              {PRIVACY_NOTICE_URL && PRIVACY_NOTICE_URL.trim() && (
-                <>
-                  <a
-                    href={PRIVACY_NOTICE_URL}
-                    className="text-base-content/70 hover:text-primary transition-colors duration-200 underline decoration-dotted underline-offset-4 hover:decoration-solid"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t('footer.privacyNotice')}
-                  </a>
-                  <span className="text-base-content/40">•</span>
-                </>
-              )}
-              {IMPRINT_URL && IMPRINT_URL.trim() && (
-                <>
-                  <a
-                    href={IMPRINT_URL}
-                    className="text-base-content/70 hover:text-primary transition-colors duration-200 underline decoration-dotted underline-offset-4 hover:decoration-solid"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t('footer.imprint')}
-                  </a>
-                  <span className="text-base-content/40">•</span>
-                </>
-              )}
-              <span className="text-base-content/70">
-                &copy; 2014&ndash;{new Date().getFullYear()}{' '}
+              {hasPrivacyNotice && (
                 <a
-                  href="https://yopass.se"
-                  className="text-primary hover:text-primary-focus font-medium transition-colors duration-200 underline decoration-dotted underline-offset-4 hover:decoration-solid"
+                  href={PRIVACY_NOTICE_URL}
+                  className="text-base-content/70 hover:text-primary transition-colors duration-200 underline decoration-dotted underline-offset-4 hover:decoration-solid"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Yopass
+                  {t('footer.privacyNotice')}
                 </a>
-              </span>
+              )}
+              {hasPrivacyNotice && hasImprint && (
+                <span className="text-base-content/40">&bull;</span>
+              )}
+              {hasImprint && (
+                <a
+                  href={IMPRINT_URL}
+                  className="text-base-content/70 hover:text-primary transition-colors duration-200 underline decoration-dotted underline-offset-4 hover:decoration-solid"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('footer.imprint')}
+                </a>
+              )}
             </div>
           </div>
         </div>

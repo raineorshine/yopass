@@ -87,7 +87,7 @@ func init() {
 	pflag.String("privacy-notice-url", "", "URL to privacy notice page")
 	pflag.String("imprint-url", "", "URL to imprint/legal notice page")
 	pflag.String("public-url", "", "base URL of the public/read-only instance used in generated secret links (e.g. https://secrets.example.com)")
-	pflag.String("default-expiry", "1h", "default expiry time for secrets [1h, 1d, 1w]")
+	pflag.String("default-expiry", "1w", "default expiry time for secrets [1h, 1d, 1w]")
 	pflag.String("force-expiration", "", "force all secrets to use this expiration time [1h, 1d, 1w]")
 	pflag.String("theme-light", server.DefaultThemeLight, "DaisyUI theme name for light mode")
 	pflag.String("theme-dark", server.DefaultThemeDark, "DaisyUI theme name for dark mode")
