@@ -27,3 +27,5 @@ website/cypress/screenshots
 
 .idea
 /yopass-server
+
+.claude/worktrees
