@@ -129,7 +129,6 @@
     "buttonHome": "Início",
     "buttonUpload": "Enviar arquivo",
     "buttonText": "Texto",
-    "appName": "Yopass",
     "buttonRequests": "Solicitações",
     "requestsWithCount": "{{count}} segredos aguardando coleta",
     "buttonReceipts": "Confirmações"

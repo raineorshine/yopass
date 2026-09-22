@@ -129,7 +129,6 @@
     "buttonHome": "Главная",
     "buttonUpload": "Загрузка",
     "buttonText": "Текст",
-    "appName": "Yopass",
     "buttonRequests": "Запросы",
     "requestsWithCount": "{{count}} секретов ожидают получения",
     "buttonReceipts": "Уведомления"

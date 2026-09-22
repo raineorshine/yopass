@@ -38,8 +38,8 @@ test.describe('Settings menu', () => {
     await expect(cog).toHaveAttribute('aria-expanded', 'true');
     await expect(page.locator(MENU)).toBeVisible();
 
-    // Clicking outside (the app logo) closes the menu.
-    await page.locator('header a[href="/"]').click();
+    // Clicking outside (the page heading) closes the menu.
+    await page.locator('#main-content').click({ position: { x: 5, y: 5 } });
     await expect(page.locator(MENU)).not.toBeVisible();
     await expect(cog).toHaveAttribute('aria-expanded', 'false');
   });

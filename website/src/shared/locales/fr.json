@@ -129,7 +129,6 @@
     "buttonHome": "Accueil",
     "buttonUpload": "Téléverser",
     "buttonText": "Texte",
-    "appName": "Yopass",
     "buttonRequests": "Demandes",
     "requestsWithCount": "{{count}} secrets en attente de récupération",
     "buttonReceipts": "Accusés"
