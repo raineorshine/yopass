@@ -129,7 +129,6 @@
     "buttonHome": "ホーム",
     "buttonUpload": "アップロード",
     "buttonText": "テキスト",
-    "appName": "Yopass",
     "buttonRequests": "リクエスト",
     "requestsWithCount": "{{count}}件のシークレットが受け取り待ちです",
     "buttonReceipts": "開封確認"
