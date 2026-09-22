@@ -6,7 +6,7 @@ description: Ship the current branch to main without a pull request — rebase o
 # Ship
 
 No pull request. The branch is rebased onto `main`, gated locally, and fast-forwarded onto `main` by
-one push — which is also what deploys.
+one push — which is also what deploys: Railway builds `main` and replaces production.
 
 `.github/workflows/test.yml` runs `on: [pull_request]`, so nothing re-runs these tests after the
 push; only Yamllint sees it. Step 3 is the only test run the change gets, which is why it comes after
@@ -78,12 +78,10 @@ A failing gate ends the ship. Fix it, then start again at step 2.
 
 ## 4. Check that nobody else is deploying
 
-Only when the push touches `website/**`, `microsite/**` or `docs/**` — those are what deploy. Skip
-this step for a push that touches none of them.
-
-Otherwise the next step deploys production: list sessions (`mcp__ccd_session_mgmt__list_sessions`)
-and look for another `💾 `; if one is there, wait for it rather than racing it. Set `💾 ` on this
-session's title before the push, replacing whatever prefix is there. Say nothing about it.
+Every push to `main` rebuilds production — there are no per-path exemptions, because Railway builds
+the whole repo. List sessions (`mcp__ccd_session_mgmt__list_sessions`) and look for another `💾 `; if
+one is there, wait for it rather than racing it. Set `💾 ` on this session's title before the push,
+replacing whatever prefix is there. Say nothing about it.
 
 ## 5. Push to `main`
 
@@ -98,22 +96,18 @@ The primary worktree's local `main` is left behind; it catches up on its next pu
 
 ## 6. Watch the deploy
 
-A push touching `website/**` deploys the `yopass-share` Cloudflare Pages project; `microsite/**` or
-`docs/**` deploys `yopass-site`. A push touching neither deploys nothing, and there is nothing to
-watch.
+The Railway `securesend` project builds this repo's `Dockerfile` from `main` and swaps
+`securesend.reverecollection.org` when the new container passes its healthcheck. The previous
+deployment keeps serving until then, so a failed build is a failed ship, not an outage.
 
-```sh
-gh run list --repo raineorshine/yopass --branch main --limit 3
-gh run watch --repo raineorshine/yopass <id>
-```
+There is no `railway` CLI on this machine; the dashboard is the source of truth:
+<https://railway.com/project/7ad4be25-6353-468c-9ab6-da3d81e080f6>
 
-`--repo` matters: `gh` resolves to `jhaals/yopass` by default in this fork and will happily report
-upstream's runs instead.
+**While the Railway GitHub App is not installed** on `raineorshine/yopass`, the service shows "Auto
+deploy unavailable" and the push does not start a build. Finish the ship by clicking Redeploy on the
+`yopass` service, and say in the report that the deploy was manual.
 
-Report whether the deploy succeeded — a ship that triggered a deploy is not done when the push
-lands. A failure at the wrangler step means the `Deploy` environment is still missing
-`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`; that is the account owner's to set, so say so and
-stop rather than retrying.
+Report whether the deployment went ACTIVE. A ship is not done at the push.
 
 ## 7. Set the title
 

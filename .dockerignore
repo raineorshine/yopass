@@ -1,0 +1,12 @@
+.git
+.github
+.claude
+**/node_modules
+website/dist
+website/playwright-report
+website/test-results
+coverage
+coverage.txt
+microsite
+docs
+deploy
