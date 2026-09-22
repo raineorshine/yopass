@@ -4,7 +4,7 @@ name: Deploy landing site to Cloudflare Pages
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - "microsite/**"
       - "docs/**"
@@ -25,7 +25,7 @@ concurrency:
 jobs:
   check:
     name: Check landing site changes
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     outputs:
       deploy: ${{ steps.deploy-check.outputs.deploy }}
@@ -120,7 +120,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy build --project-name=yopass-site --branch=master --commit-hash=${{ github.sha }}
+          command: pages deploy build --project-name=yopass-site --branch=main --commit-hash=${{ github.sha }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           packageManager: npm
           workingDirectory: microsite
