@@ -35,9 +35,7 @@ test.describe('Force Onetime Secrets', () => {
     await expect(
       page.locator('textarea[placeholder="Enter your secret..."]'),
     ).toBeVisible();
-    await expect(
-      page.locator('label:has-text("Generate decryption key")'),
-    ).toBeVisible();
+    await expect(page.locator('input[value="3600"]')).toBeVisible();
 
     // Fill in and submit secret
     await page.fill(
@@ -109,9 +107,7 @@ test.describe('Force Onetime Secrets', () => {
 
     // Verify other form elements are still present
     await expect(page.locator('input[type="file"]')).toBeAttached();
-    await expect(
-      page.locator('label:has-text("Generate decryption key")'),
-    ).toBeVisible();
+    await expect(page.locator('input[value="3600"]')).toBeVisible();
   });
 
   test('should force one_time to true even if user could somehow uncheck it', async ({
