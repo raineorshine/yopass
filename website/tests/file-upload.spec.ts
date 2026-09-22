@@ -34,17 +34,6 @@ test.describe('File Upload', () => {
         'label:has-text("One-time download") input[type="checkbox"]',
       ),
     ).toBeChecked();
-    await expect(
-      page.locator(
-        'label:has-text("Generate decryption key") input[type="checkbox"]',
-      ),
-    ).toBeChecked();
-
-    // Check custom password field is not visible by default
-    await expect(
-      page.locator('input[placeholder="Enter your password..."]'),
-    ).not.toBeVisible();
-
     // Check submit button is disabled by default (no file selected)
     await expect(page.locator('button[type="submit"]')).toBeDisabled();
     await expect(page.locator('button[type="submit"]')).toContainText(
@@ -110,71 +99,6 @@ test.describe('File Upload', () => {
     await expect(
       page.locator('button[title="Copy one-click link"]'),
     ).toBeVisible();
-    await expect(page.locator('button[title="Copy short link"]')).toBeVisible();
-  });
-
-  test('should upload file with custom password', async ({ page }) => {
-    await mockAPI.mockUploadFile(mockResponses.fileUploaded);
-
-    const customPassword = 'my-file-password-123';
-
-    // Upload file
-    const fileContent = testFiles.textFile.content;
-    await page.setInputFiles('input[type="file"]', {
-      name: testFiles.textFile.name,
-      mimeType: testFiles.textFile.type,
-      buffer: Buffer.from(fileContent),
-    });
-
-    // Uncheck generate key to enable custom password by clicking the label
-    await page.click('label:has-text("Generate decryption key")');
-
-    // Wait for password field to appear
-    await expect(
-      page.locator('input[placeholder="Enter your password..."]'),
-    ).toBeVisible();
-
-    // Enter custom password
-    await page.fill(
-      'input[placeholder="Enter your password..."]',
-      customPassword,
-    );
-
-    // Submit the form
-    await page.click('button[type="submit"]');
-
-    // Should redirect to result page
-    await expect(
-      page.locator('h2:has-text("Secret stored securely")'),
-    ).toBeVisible();
-
-    // With custom password, should NOT show one-click link
-    await expect(
-      page.locator('button[title="Copy one-click link"]'),
-    ).not.toBeVisible();
-    await expect(page.locator('text=One-click link')).not.toBeVisible();
-
-    // Should show short link
-    await expect(page.locator('button[title="Copy short link"]')).toBeVisible();
-    await expect(
-      page.locator('div:has-text("Short link")').first(),
-    ).toBeVisible();
-
-    // Should show the custom password in the decryption key section
-    const passwordCode = page
-      .locator('div:has-text("Decryption key")')
-      .locator('..')
-      .locator('code')
-      .last();
-    await expect(passwordCode).toContainText(customPassword);
-
-    // Validate the request headers
-    const lastRequest = mockAPI.getLastRequest('/create/file');
-    expect(lastRequest).toBeDefined();
-    expect(lastRequest?.payload).toMatchObject({
-      expiration: 3600,
-      oneTime: true,
-    });
   });
 
   test('should handle different file types', async ({ page }) => {
@@ -444,7 +368,6 @@ test.describe('File Upload', () => {
   }) => {
     await mockAPI.mockUploadFile(mockResponses.fileUploaded);
 
-    const customPassword = 'test-file-password-789';
     const fileContent = testFiles.jsonFile.content;
 
     // Upload JSON file
@@ -462,21 +385,6 @@ test.describe('File Upload', () => {
       .locator('form input[type="checkbox"]')
       .nth(0)
       .uncheck({ force: true });
-
-    // Use custom password by unchecking the generate key checkbox
-    await page
-      .locator('form input[type="checkbox"]')
-      .nth(1)
-      .uncheck({ force: true });
-
-    // Wait for password field to appear
-    await expect(
-      page.locator('input[placeholder="Enter your password..."]'),
-    ).toBeVisible();
-    await page.fill(
-      'input[placeholder="Enter your password..."]',
-      customPassword,
-    );
 
     // Submit the form
     await page.click('button[type="submit"]');
@@ -499,19 +407,10 @@ test.describe('File Upload', () => {
       expect(lastRequest?.payload.oneTime).toBe(false);
     }
 
-    // Should show only short link with custom password
+    // Should show the one-click link
     await expect(
       page.locator('button[title="Copy one-click link"]'),
-    ).not.toBeVisible();
-    await expect(page.locator('button[title="Copy short link"]')).toBeVisible();
-
-    // Should display the custom password
-    const passwordCode = page
-      .locator('div:has-text("Decryption key")')
-      .locator('..')
-      .locator('code')
-      .last();
-    await expect(passwordCode).toContainText(customPassword);
+    ).toBeVisible();
 
     // URL should have streaming prefix
     const linkCode = page.locator('code').first();
