@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <a href="https://codecov.io/gh/jhaals/yopass"><img src="https://codecov.io/gh/jhaals/yopass/branch/main/graph/badge.svg" alt="Code coverage"></a>
+  <a href="https://codecov.io/gh/raineorshine/yopass"><img src="https://codecov.io/gh/raineorshine/yopass/branch/main/graph/badge.svg" alt="Code coverage"></a>
   <a href="https://github.com/jhaals/yopass/releases"><img src="https://img.shields.io/github/v/release/jhaals/yopass?sort=semver" alt="Latest release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/jhaals/yopass" alt="Apache 2.0 license"></a>
 </p>
