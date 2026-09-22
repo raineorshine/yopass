@@ -103,9 +103,8 @@ deployment keeps serving until then, so a failed build is a failed ship, not an 
 There is no `railway` CLI on this machine; the dashboard is the source of truth:
 <https://railway.com/project/7ad4be25-6353-468c-9ab6-da3d81e080f6>
 
-**While the Railway GitHub App is not installed** on `raineorshine/yopass`, the service shows "Auto
-deploy unavailable" and the push does not start a build. Finish the ship by clicking Redeploy on the
-`yopass` service, and say in the report that the deploy was manual.
+The build starts within seconds of the push. Ignore the service settings' "Auto deploy unavailable"
+notice — it is stale, and the Deployments tab is what tells you the truth.
 
 Report whether the deployment went ACTIVE. A ship is not done at the push.
 

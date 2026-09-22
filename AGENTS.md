@@ -19,8 +19,10 @@ built from this repo's `Dockerfile` at `main` and serves `securesend.reverecolle
 1337, with a `Redis` service beside it for storage. Cloudflare holds the DNS for the domain and
 nothing else — the record is a DNS-only CNAME to Railway.
 
-`Wait for CI` on the service is off, and stays off: `test.yml` only runs on pull requests, so a
-Railway deploy waiting on Actions would wait forever.
+A push to `main` starts a build within seconds. The service's settings claim "Auto deploy
+unavailable" — a stale notice about the GitHub App; deploys fire regardless, which is what the
+Deployments tab shows. `Wait for CI` on the service is off, and stays off: `test.yml` only runs on
+pull requests, so a Railway deploy waiting on Actions would wait forever.
 
 Three workflows in this repo are upstream's deploy paths and are disabled on purpose — leave them
 that way. `deploy-cloudflare-share.yml` and `deploy-cloudflare-site.yml` publish `yopass.se` to
@@ -55,9 +57,9 @@ repo.
   `origin/main`, gate, `git push origin HEAD:main`, watch the Railway deploy — and sets the prefix
   itself once the push lands. `📦 ` holds until then. `main` stays linear; nothing rebases what is
   already on it.
-- `🚙 ` is the Railway GitHub App, which only the repo owner can install: until it is installed on
-  `raineorshine/yopass`, the service reads "Auto deploy unavailable" and a push to `main` does not
-  deploy — a ship ends with a redeploy clicked in the Railway dashboard.
+- `🚙 ` is a look at the live page after a ship, and anything else that needs the Railway dashboard:
+  there is no `railway` CLI on this machine, so a session cannot read a build log or roll a
+  deployment back by itself.
 - `💾 ` is a push to `main`, and `🔒 `/`🔓 ` are port 3000 — both below. `🔍 ` is inert here: nothing
   in this repo has a dry run that an apply follows.
 
