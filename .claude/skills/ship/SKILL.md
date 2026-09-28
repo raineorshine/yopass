@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Ship the current branch to main without a pull request — rebase onto main, run the gate locally, fast-forward main with a single push, and watch the Cloudflare deploy that push triggers. Use when asked to ship, land, release, or deploy the branch.
+description: Ship the current branch to main without a pull request — rebase onto main, run the gate locally, fast-forward main with a single push, watch the deploy that push triggers, and archive the session. Use when asked to ship, land, release, or deploy the branch.
 ---
 
 # Ship
@@ -110,8 +110,24 @@ Report whether the deployment went ACTIVE. A ship is not done at the push.
 
 ## 7. Set the title
 
-Set `🚀 ` on this session's title, replacing whatever prefix is there. This is the last step, after
+Set `🚀 ` on this session's title, replacing whatever prefix is there. This comes after
 the push has landed — never earlier, and nothing restores it, because a ship that fell over never set
 it. Say nothing about it in the response.
+
+## 8. Archive the session
+
+Last of all, after the deploy report and the title, archive this session: `mcp__ccd_session_mgmt__archive_session` with `"self"`
+and a reason naming the ship. It is the final tool call of the ship, made after the report in the same response — nothing after the
+archive reaches the user. Asking to ship is the agreement to archive; do not ask again.
+
+Skip it when `learn` or `learn-organize` invoked this ship: the session goes on after that ship. A
+ship that never reached `main` is still work in progress and keeps its session.
+
+**The archive refuses while anything of this session is still pending** — a background task, an armed
+waiter, a scheduled wakeup left as a fallback. Stop each one first (a pending wakeup is cancelled with
+`ScheduleWakeup` and `stop: true`); if it still refuses, the user archives from the sidebar.
+
+Archiving removes the session's worktree, if it has one. The branch outlives it, and the session is
+reopened from the Archived list if it is ever needed again.
 
 The glossary arrives from the `emotive` plugin's `SessionStart` hook. Do not restate it.
