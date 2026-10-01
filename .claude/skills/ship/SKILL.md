@@ -92,7 +92,13 @@ git push origin HEAD:main
 No checkout: `main` is checked out in the primary worktree, and the push is refused unless it
 fast-forwards. A rejection means `main` moved — go back to step 2.
 
-The primary worktree's local `main` is left behind; it catches up on its next pull.
+Then fast-forward the local `main` to what landed, so the next session branches off it and not off a stale `main`:
+
+```bash
+git fetch origin main && MAIN=$(git worktree list --porcelain | awk '/^worktree /{w=substr($0,10)} $0=="branch refs/heads/main"{print w}') && if [ -z "$MAIN" ]; then git fetch origin main:main; elif [ -n "$(git -C "$MAIN" status --porcelain --untracked-files=no)" ]; then echo "local main left behind: $MAIN has local changes"; else git -C "$MAIN" merge --ff-only origin/main; fi
+```
+
+It finds `main` wherever it is checked out, and moves the ref alone when `main` is checked out nowhere. Untracked files don't block it. When it reports local changes, or the fast-forward refuses because local `main` has commits of its own, leave it and say in one line that the local `main` was left behind. Never reset, stash, commit or `checkout --` in that checkout: the changes may be another session's work.
 
 ## 6. Watch the deploy
 
