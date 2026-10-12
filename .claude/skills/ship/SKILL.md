@@ -115,8 +115,9 @@ The build starts within seconds of the push. Ignore the service settings' "Auto 
 notice — it is stale, and the Deployments tab is what tells you the truth.
 
 Read the commit message on the ACTIVE deployment to know the push is live, not the site's status
-code. The dashboard renders its content lazily, so a read batched straight after a `navigate` sees
-only chrome — leave three to five seconds between them.
+code. The dashboard renders its content lazily, and a cold tab can take twenty seconds or more
+before any of it exists: a read batched straight after a `navigate` sees only chrome, and an empty
+accessibility tree means keep waiting, not that the page is empty.
 
 Report whether the deployment went ACTIVE. A ship is not done at the push.
 
