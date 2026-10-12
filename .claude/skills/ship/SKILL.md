@@ -103,14 +103,20 @@ It finds `main` wherever it is checked out, and moves the ref alone when `main` 
 ## 6. Watch the deploy
 
 The Railway `securesend` project builds this repo's `Dockerfile` from `main` and swaps
-`securesend.reverecollection.org` when the new container passes its healthcheck. The previous
-deployment keeps serving until then, so a failed build is a failed ship, not an outage.
+`securesend.reverecollection.org` about three to four minutes later, once the new container is up —
+there is no healthcheck path configured. The previous deployment keeps serving until then, so a
+failed build is a failed ship, not an outage, and a `200` from the live URL says nothing about which
+build answered it.
 
 There is no `railway` CLI on this machine; the dashboard is the source of truth:
 <https://railway.com/project/7ad4be25-6353-468c-9ab6-da3d81e080f6>
 
 The build starts within seconds of the push. Ignore the service settings' "Auto deploy unavailable"
 notice — it is stale, and the Deployments tab is what tells you the truth.
+
+Read the commit message on the ACTIVE deployment to know the push is live, not the site's status
+code. The dashboard renders its content lazily, so a read batched straight after a `navigate` sees
+only chrome — leave three to five seconds between them.
 
 Report whether the deployment went ACTIVE. A ship is not done at the push.
 

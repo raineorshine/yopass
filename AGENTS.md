@@ -12,6 +12,16 @@ default here — `gh run list` silently reports someone else's CI. `gh repo set-
 raineorshine/yopass` is set in this clone; pass `--repo raineorshine/yopass` from anywhere that
 config does not reach.
 
+The fork is detaching from upstream on purpose, so parity with `jhaals/yopass` is a non-goal and this
+repo's own files are free to diverge. Much of the tree still carries upstream's identity — the Go
+module path, `microsite/`'s `yopass.se` URL, the README and the product name — and changing that is
+its own piece of work, not something to do in passing.
+
+An inherited config file describes upstream's infrastructure, not this one's. Read how the live
+deployment actually serves before acting on a workflow, a registry reference or a credential the fork
+came with: a long arc of this repo's setup went into Cloudflare Pages secrets for a deploy path that
+turned out to be upstream's.
+
 ## Where this deploys
 
 Production is the Railway project `securesend`, environment `production`: the `yopass` service is
@@ -19,10 +29,18 @@ built from this repo's `Dockerfile` at `main` and serves `securesend.reverecolle
 1337, with a `Redis` service beside it for storage. Cloudflare holds the DNS for the domain and
 nothing else — the record is a DNS-only CNAME to Railway.
 
-A push to `main` starts a build within seconds. The service's settings claim "Auto deploy
-unavailable" — a stale notice about the GitHub App; deploys fire regardless, which is what the
-Deployments tab shows. `Wait for CI` on the service is off, and stays off: `test.yml` only runs on
+A push to `main` starts a build within seconds and the new container takes the domain about three to
+four minutes later. No healthcheck path is configured on the service, so the swap waits on the
+container starting rather than on anything the app answers. A `200` from the live URL proves nothing
+either way — the old container serves throughout the build — so confirm a deploy by reading the
+commit on the ACTIVE deployment in the Deployments tab. The service's settings claim "Auto deploy
+unavailable", a stale notice about the GitHub App; deploys fire regardless, which is what that same
+tab shows. `Wait for CI` on the service is off, and stays off: `test.yml` only runs on
 pull requests, so a Railway deploy waiting on Actions would wait forever.
+
+A push to `main` is the production build, so a change to the `Dockerfile` is verified with a local
+`docker build` before it goes out. The image installs the website from `yarn.lock`, which is what
+makes production the same dependency set the gate tested.
 
 Three workflows in this repo are upstream's deploy paths and are disabled on purpose — leave them
 that way. `deploy-cloudflare-share.yml` and `deploy-cloudflare-site.yml` publish `yopass.se` to
@@ -33,7 +51,8 @@ Docker Hub namespace with credentials this fork does not have.
 
 `website/yarn.lock` is a **Yarn v1** lockfile and this machine's `yarn` is Corepack's Yarn 4, which
 migrates the project on sight — writing a `website/.yarnrc.yml` that is not in git — and then fails
-the install against the v1 lockfile. Run website commands through Yarn 1:
+the install against the v1 lockfile. That file is untracked and not gitignored, so delete it if a
+stray `yarn` ever leaves one behind. Run website commands through Yarn 1:
 
 ```sh
 npx --yes yarn@1.22.22 install --frozen-lockfile
