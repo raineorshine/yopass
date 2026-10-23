@@ -81,7 +81,7 @@ A failing gate ends the ship. Fix it, then start again at step 2.
 Every push to `main` rebuilds production — there are no per-path exemptions, because Railway builds
 the whole repo. List sessions (`mcp__ccd_session_mgmt__list_sessions`) and look for another `💾 `; if
 one is there, wait for it rather than racing it. Set `💾 ` on this session's title before the push,
-replacing whatever prefix is there. Say nothing about it.
+replacing whatever prefix is there (with the tools step 7 names). Say nothing about it.
 
 ## 5. Push to `main`
 
@@ -123,13 +123,20 @@ Report whether the deployment went ACTIVE. A ship is not done at the push.
 
 ## 7. Set the title
 
-Set `🚀 ` on this session's title, replacing whatever prefix is there. This comes after
+Set `🚀 ` on this session's title, replacing whatever prefix is there rather than stacking. This comes after
 the push has landed — never earlier, and nothing restores it, because a ship that fell over never set
 it. Say nothing about it in the response.
 
+Read the title with `mcp__ccd_session_mgmt__get_session` (`"self"`) and set it with
+`mcp__ccd_session_mgmt__set_session_title`. In a cloud session, where those do not exist,
+`mcp__claude-code-remote__get_session` with no `session_id` describes this session (`ccr.id`,
+`ccr.title`), and `mcp__claude-code-remote__set_session_title` takes that id. Skip only when
+neither tool exists.
+
 ## 8. Archive the session
 
-Last of all, after the deploy report and the title, archive this session: `mcp__ccd_session_mgmt__archive_session` with `"self"`
+Last of all, after the deploy report and the title, archive this session: `mcp__ccd_session_mgmt__archive_session` with `"self"`, or in a cloud
+session `mcp__claude-code-remote__archive_session` with this session's `ccr.id`,
 and a reason naming the ship. It is the final tool call of the ship, made after the report in the same response — nothing after the
 archive reaches the user. Asking to ship is the agreement to archive; do not ask again.
 
